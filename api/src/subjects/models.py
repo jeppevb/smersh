@@ -1,34 +1,35 @@
-﻿from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, DateTime
-from sqlalchemy.orm import relationship
+﻿from datetime import datetime
 
-from .database import Base
+from sqlalchemy import Boolean, ForeignKey, Integer, String, DateTime
+from sqlalchemy.orm import relationship, mapped_column, Mapped
 
-
-class Subject(Base):
-    __tablename__ = "subjects"
-
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True, unique=True)
-
-    rating = Column(Integer, index=True, default=1600)
-    
-    votes = relationship("Vote")
+from ..database import Base
+from ..models import User
 
 
 class Vote(Base):
     __tablename__ = "votes"
 
-    id = Column(Integer, primary_key=True, index=True)
-    
-    subject_a_id = Column(Integer, ForeignKey("subjects.id"))
-    subject_a = relationship("Subject", back_populates="votes")
-    
-    subject_b_id = Column(Integer, ForeignKey("subjects.id"))
-    subject_b = relationship("Subject", back_populates="votes")
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
 
-    subject_a_win = Column(Boolean)
-    
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    subject_a_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"))
+    subject_a: Mapped["Subject"] = relationship("Subject", foreign_keys=subject_a_id)
 
-    voter_id = Column(Integer, ForeignKey("users.id"))
-    voter = relationship("User", back_populates="votes")
+    subject_b_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"))
+    subject_b: Mapped["Subject"] = relationship("Subject", foreign_keys=subject_b_id)
+
+    subject_a_win: Mapped[bool] = mapped_column(Boolean)
+
+    timestamp: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    voter_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    voter: Mapped["User"] = relationship("User")
+
+
+class Subject(Base):
+    __tablename__ = "subjects"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, index=True, unique=True)
+
+    rating: Mapped[int] = mapped_column(Integer, index=True, default=1600)

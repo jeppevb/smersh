@@ -8,8 +8,13 @@ class Subject(BaseModel):
 
 
 class Vote(BaseModel):
-    subject_a: Subject
-    subject_b: Subject
+    subject_a: str
+    subject_b: str
     timestamp: datetime
     a_win: bool
     voter: str
+
+
+class Matchup(BaseModel):
+    subject_a: str
+    subject_b: str
