@@ -2,9 +2,18 @@
 from pydantic import BaseModel
 
 
-class Subject(BaseModel):
+class BaseSubject(BaseModel):
     name: str
+    smersh: str
+
+
+class Subject(BaseSubject):
     rating: int
+
+
+class Smersh(BaseModel):
+    subjects: list[str]
+    name: str
 
 
 class Vote(BaseModel):

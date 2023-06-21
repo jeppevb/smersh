@@ -30,6 +30,16 @@ class Subject(Base):
     __tablename__ = "subjects"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    name: Mapped[str] = mapped_column(String, index=True, unique=True)
+    name: Mapped[str] = mapped_column(String, index=True)
 
     rating: Mapped[int] = mapped_column(Integer, index=True, default=1600)
+
+    smersh_id: Mapped[int] = mapped_column(ForeignKey("smershes.id"))
+    smersh: Mapped["Smersh"] = relationship("Smersh")
+
+
+class Smersh(Base):
+    __tablename__ = "smershes"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, index=True, unique=True)
