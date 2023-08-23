@@ -1,4 +1,7 @@
-﻿from sqlalchemy import select, insert, update, func, asc, or_
+﻿import random
+
+from fastapi import HTTPException
+from sqlalchemy import select, insert, update, func, asc, or_
 from sqlalchemy.orm import Session
 from .models import Subject, Vote, Smersh
 from ..models import User
@@ -88,5 +91,9 @@ def get_matchup(smersh: str, db_session: Session):
         select(Subject.name, func.count(Vote.id).label("count"))
             .outerjoin(Vote, onclause=or_(Vote.subject_b_id == Subject.id, Vote.subject_a_id == Subject.id))
             .where(Subject.smersh_id == select(Smersh.id).where(Smersh.name == smersh))
-            .group_by("name").order_by('count')).fetchmany(2)
-    return var
+            .group_by("name").order_by('count')).fetchmany(10)
+    try:
+        top2 = random.sample(var, 2)
+        return top2
+    except ValueError:
+        raise HTTPException(status_code=404, detail=f"Not enough subjects found for smersh: {smersh}")
